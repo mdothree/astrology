@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Astrology - Free Birth Chart Calculator</title>
+    <meta name="description" content="Get your free astrology birth chart. Calculate your Sun, Moon, and Rising signs based on your birth data.">
+    
+    <meta property="og:title" content="Astrology Birth Chart">
+    <meta property="og:description" content="Calculate your complete birth chart including Sun, Moon, and Rising signs.">
+    <meta property="og:type" content="website">
+    
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230a0a1a'/><text x='16' y='24' font-size='18' text-anchor='middle' fill='%23ffd700'>☽</text></svg>">
+    
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="stars"></div>
+    
+    <header>
+        <nav class="container">
+            <div class="logo">
+                <h1>☽ Astrology</h1>
+            </div>
+            <div class="nav-links">
+                <a href="#how-it-works">How It Works</a>
+                <a href="#signs">Zodiac Signs</a>
+                <a href="#pricing">Premium</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container">
+                <h2 class="hero-title">Discover Your Birth Chart</h2>
+                <p class="hero-subtitle">Uncover the cosmic blueprint of your personality</p>
+                
+                <form class="birth-form" id="birth-form">
+                    <div class="form-group">
+                        <label for="birth-date">Birth Date</label>
+                        <input type="date" id="birth-date" name="birth-date" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="birth-time">Birth Time (optional)</label>
+                        <input type="time" id="birth-time" name="birth-time">
+                        <span class="hint">Helps calculate accurate rising sign</span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="location">Birth Location (optional)</label>
+                        <input type="text" id="location" name="location" placeholder="City, Country">
+                        <span class="hint">Used for house calculations</span>
+                    </div>
+                    
+                    <button type="submit" class="btn-primary btn-calculate">
+                        <span>Calculate My Chart</span>
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <section class="chart-display" id="chart-display" style="display: none;">
+            <div class="container">
+                <h3 class="section-title">Your Birth Chart</h3>
+                <div class="chart-result" id="chart-result">
+                </div>
+            </div>
+        </section>
+
+        <section class="reading-section" id="reading-section" style="display: none;">
+            <div class="container">
+                <div class="reading-content">
+                    <h3>Your Cosmic Profile</h3>
+                    
+                    <div class="free-reading" id="free-reading">
+                        <div class="chart-meanings" id="chart-meanings">
+                        </div>
+                    </div>
+
+                    <div class="premium-upsell" id="premium-upsell">
+                        <h4>Want Complete Chart Analysis?</h4>
+                        <p>Unlock AI-powered full birth chart with all planets and houses</p>
+                        <ul class="premium-features">
+                            <li>✨ All 10 planets placed</li>
+                            <li>✨ 12 houses calculated</li>
+                            <li>✨ Major aspects analyzed</li>
+                            <li>✨ AI-generated personality profile</li>
+                            <li>✨ Compatibility insights</li>
+                        </ul>
+                        <button class="btn-premium" id="upgrade-btn">
+                            Get Full Chart - $9.99
+                        </button>
+                    </div>
+
+                    <button class="btn-share" id="share-btn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="18" cy="5" r="3"></circle>
+                            <circle cx="6" cy="12" r="3"></circle>
+                            <circle cx="18" cy="19" r="3"></circle>
+                            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                        </svg>
+                        Share My Chart
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section id="how-it-works" class="section-light">
+            <div class="container">
+                <h2>How Birth Charts Work</h2>
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-icon">🌍</div>
+                        <h3>Enter Your Birth Data</h3>
+                        <p>Your exact birth moment and place shape your chart</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-icon">☀️</div>
+                        <h3>Planets Are Placed</h3>
+                        <p>Each planet falls in a zodiac sign and house</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-icon">📜</div>
+                        <h3>Patterns Emerge</h3>
+                        <p>Interpretations reveal your cosmic personality</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="signs" class="signs-info">
+            <div class="container">
+                <h2>The Zodiac Signs</h2>
+                <p class="signs-intro">Each sign carries unique energy and symbolism</p>
+                <div class="signs-grid" id="signs-grid">
+                </div>
+            </div>
+        </section>
+
+        <section id="pricing" class="pricing-section">
+            <div class="container">
+                <h2>Pricing</h2>
+                <div class="pricing-cards">
+                    <div class="pricing-card">
+                        <h3>Basic</h3>
+                        <div class="price">$0</div>
+                        <ul>
+                            <li>Sun, Moon, Rising signs</li>
+                            <li>Basic interpretations</li>
+                            <li>Element analysis</li>
+                            <li>Share chart</li>
+                        </ul>
+                        <button class="btn-secondary">Get Started</button>
+                    </div>
+                    <div class="pricing-card featured">
+                        <div class="badge">Most Popular</div>
+                        <h3>Full Chart</h3>
+                        <div class="price">$9.99</div>
+                        <ul>
+                            <li>Complete 10-planet chart</li>
+                            <li>12 houses calculated</li>
+                            <li>Major aspects analysis</li>
+                            <li>AI-powered insights</li>
+                            <li>Compatibility report</li>
+                        </ul>
+                        <button class="btn-premium">Get Full Chart</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Astrology Chart. All rights reserved.</p>
+            <div class="footer-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/app.js" type="module"></script>
+</body>
+</html>

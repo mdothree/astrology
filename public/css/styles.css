@@ -1,0 +1,644 @@
+:root {
+    --primary: #ffd700;
+    --primary-dark: #b8860b;
+    --secondary: #1a1a2e;
+    --accent: #16213e;
+    --bg: #0a0a1a;
+    --text: #e8e8e8;
+    --text-muted: #a0a0a0;
+    --card-bg: rgba(22, 33, 62, 0.8);
+    --gold: linear-gradient(135deg, #ffd700, #ffaa00);
+    --cosmic: linear-gradient(135deg, #1a1a3e, #0a0a1a);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Georgia', serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+.stars {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    background: radial-gradient(2px 2px at 20px 30px, #fff, transparent),
+                radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.8), transparent),
+                radial-gradient(1px 1px at 90px 40px, #fff, transparent),
+                radial-gradient(2px 2px at 160px 120px, rgba(255,255,255,0.6), transparent),
+                radial-gradient(1px 1px at 230px 80px, #fff, transparent),
+                radial-gradient(2px 2px at 300px 200px, rgba(255,215,0,0.4), transparent),
+                radial-gradient(1px 1px at 350px 150px, #fff, transparent),
+                radial-gradient(2px 2px at 420px 50px, rgba(255,255,255,0.7), transparent),
+                radial-gradient(1px 1px at 480px 180px, rgba(255,215,0,0.3), transparent),
+                radial-gradient(2px 2px at 550px 100px, #fff, transparent);
+    background-size: 600px 300px;
+    animation: twinkle 8s ease-in-out infinite;
+    z-index: 0;
+}
+
+@keyframes twinkle {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    position: relative;
+    z-index: 1;
+}
+
+header {
+    padding: 20px 0;
+    background: rgba(10, 10, 26, 0.9);
+    backdrop-filter: blur(10px);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+header nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo h1 {
+    font-size: 1.5rem;
+    background: var(--gold);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.nav-links a {
+    color: var(--text);
+    text-decoration: none;
+    margin-left: 30px;
+    font-size: 0.9rem;
+    transition: color 0.3s;
+}
+
+.nav-links a:hover {
+    color: var(--primary);
+}
+
+.hero {
+    padding: 80px 0;
+    text-align: center;
+    min-height: 70vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.hero-title {
+    font-size: 3rem;
+    margin-bottom: 20px;
+    background: var(--gold);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.hero-subtitle {
+    font-size: 1.3rem;
+    color: var(--text-muted);
+    margin-bottom: 40px;
+}
+
+.birth-form {
+    max-width: 500px;
+    margin: 0 auto;
+    background: var(--card-bg);
+    padding: 40px;
+    border-radius: 20px;
+    border: 1px solid rgba(255, 215, 0, 0.2);
+}
+
+.form-group {
+    margin-bottom: 25px;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 1rem;
+    color: var(--primary);
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px 15px;
+    background: rgba(10, 10, 26, 0.8);
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    border-radius: 10px;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+.form-group .hint {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-top: 5px;
+}
+
+.btn-primary {
+    background: var(--gold);
+    color: #1a1a2e;
+    border: none;
+    padding: 15px 40px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+    font-family: inherit;
+    width: 100%;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3);
+}
+
+.btn-secondary {
+    background: transparent;
+    color: var(--primary);
+    border: 2px solid var(--primary);
+    padding: 15px 40px;
+    font-size: 1.1rem;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-family: inherit;
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 215, 0, 0.1);
+}
+
+.btn-premium {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    padding: 18px 50px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+    font-family: inherit;
+}
+
+.btn-premium:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+}
+
+.chart-display {
+    padding: 60px 0;
+}
+
+.section-title {
+    font-size: 2rem;
+    text-align: center;
+    margin-bottom: 40px;
+    color: var(--primary);
+}
+
+.chart-result {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.chart-sunmoon {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+    margin-bottom: 40px;
+}
+
+.sign-card {
+    background: var(--card-bg);
+    border-radius: 20px;
+    padding: 30px;
+    width: 280px;
+    text-align: center;
+    border: 1px solid rgba(255, 215, 0, 0.2);
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeIn 0.6s forwards;
+}
+
+.sign-card:nth-child(1) { animation-delay: 0.1s; }
+.sign-card:nth-child(2) { animation-delay: 0.3s; }
+.sign-card:nth-child(3) { animation-delay: 0.5s; }
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.sign-card .symbol {
+    font-size: 4rem;
+    margin-bottom: 15px;
+}
+
+.sign-card .title {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 5px;
+}
+
+.sign-card .name {
+    font-size: 1.8rem;
+    color: var(--primary);
+    margin-bottom: 5px;
+}
+
+.sign-card .dates {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 15px;
+}
+
+.sign-card .element {
+    font-size: 0.9rem;
+    color: var(--text);
+}
+
+.sign-card .ruler {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: 5px;
+}
+
+.reading-section {
+    padding: 60px 0;
+}
+
+.reading-content {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.reading-content h3 {
+    font-size: 1.8rem;
+    margin-bottom: 30px;
+    color: var(--primary);
+    text-align: center;
+}
+
+.chart-meanings {
+    background: var(--card-bg);
+    border-radius: 20px;
+    padding: 40px;
+    margin-bottom: 30px;
+}
+
+.chart-section {
+    margin-bottom: 35px;
+    padding-bottom: 35px;
+    border-bottom: 1px solid rgba(255, 215, 0, 0.1);
+}
+
+.chart-section:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+
+.chart-section-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.chart-section-header .symbol {
+    font-size: 2.5rem;
+}
+
+.chart-section-header h4 {
+    font-size: 1.4rem;
+    color: var(--primary);
+}
+
+.chart-section-header .role {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.chart-section p {
+    line-height: 1.8;
+    margin-bottom: 15px;
+}
+
+.chart-section ul {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.chart-section li {
+    background: rgba(255, 215, 0, 0.1);
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+}
+
+.personality-summary {
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 170, 0, 0.1));
+    border-radius: 16px;
+    padding: 25px;
+    margin-top: 20px;
+    text-align: center;
+    font-style: italic;
+    font-size: 1.1rem;
+    line-height: 1.7;
+}
+
+.premium-upsell {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.2), rgba(118, 75, 162, 0.2));
+    border-radius: 20px;
+    padding: 40px;
+    text-align: center;
+    margin-bottom: 30px;
+    border: 1px solid rgba(102, 126, 234, 0.3);
+}
+
+.premium-upsell h4 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+}
+
+.premium-upsell p {
+    color: var(--text-muted);
+    margin-bottom: 20px;
+}
+
+.premium-features {
+    list-style: none;
+    margin-bottom: 30px;
+}
+
+.premium-features li {
+    padding: 8px 0;
+    color: var(--text);
+}
+
+.btn-share {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: transparent;
+    border: 2px solid var(--text-muted);
+    color: var(--text);
+    padding: 12px 30px;
+    border-radius: 30px;
+    cursor: pointer;
+    margin: 0 auto 20px;
+    transition: all 0.3s;
+    font-family: inherit;
+}
+
+.btn-share:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.section-light {
+    padding: 80px 0;
+    background: rgba(26, 26, 46, 0.5);
+}
+
+.section-light h2 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 50px;
+    color: var(--primary);
+}
+
+.steps {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 40px;
+    text-align: center;
+}
+
+.step {
+    padding: 30px;
+}
+
+.step-icon {
+    font-size: 3rem;
+    margin-bottom: 20px;
+}
+
+.step h3 {
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+}
+
+.step p {
+    color: var(--text-muted);
+    line-height: 1.6;
+}
+
+.signs-info {
+    padding: 80px 0;
+}
+
+.signs-info h2 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: var(--primary);
+}
+
+.signs-intro {
+    text-align: center;
+    color: var(--text-muted);
+    margin-bottom: 40px;
+}
+
+.signs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 20px;
+}
+
+.sign-card-grid {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 25px;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+    border: 1px solid transparent;
+}
+
+.sign-card-grid:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(255, 215, 0, 0.1);
+    border-color: rgba(255, 215, 0, 0.3);
+}
+
+.sign-card-grid .symbol {
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+.sign-card-grid .name {
+    font-size: 1.1rem;
+    margin-bottom: 5px;
+}
+
+.sign-card-grid .dates {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.pricing-section {
+    padding: 80px 0;
+    background: rgba(26, 26, 46, 0.5);
+}
+
+.pricing-section h2 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 50px;
+    color: var(--primary);
+}
+
+.pricing-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 40px;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.pricing-card {
+    background: var(--card-bg);
+    border-radius: 20px;
+    padding: 40px;
+    text-align: center;
+    border: 1px solid rgba(255, 215, 0, 0.1);
+    position: relative;
+}
+
+.pricing-card.featured {
+    border-color: var(--primary);
+}
+
+.pricing-card .badge {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--gold);
+    color: #1a1a2e;
+    padding: 5px 20px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.pricing-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+}
+
+.pricing-card .price {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 30px;
+}
+
+.pricing-card ul {
+    list-style: none;
+    margin-bottom: 30px;
+}
+
+.pricing-card li {
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--text-muted);
+}
+
+.pricing-card li:last-child {
+    border-bottom: none;
+}
+
+footer {
+    padding: 40px 0;
+    text-align: center;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+footer p {
+    color: var(--text-muted);
+    margin-bottom: 15px;
+}
+
+.footer-links a {
+    color: var(--text-muted);
+    text-decoration: none;
+    margin: 0 15px;
+    transition: color 0.3s;
+}
+
+.footer-links a:hover {
+    color: var(--primary);
+}
+
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2rem;
+    }
+    
+    .chart-sunmoon {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .sign-card {
+        width: 100%;
+        max-width: 300px;
+    }
+    
+    .nav-links {
+        display: none;
+    }
+}
