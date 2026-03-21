@@ -1,4 +1,4 @@
-import { signs, calculateSimplifiedChart, getChartInterpretation } from './js/services/database.js';
+import { signs, calculateSimplifiedChart, getChartInterpretation } from './services/database.js';
 
 let currentChart = null;
 
@@ -10,7 +10,12 @@ const elements = {
     chartMeanings: document.getElementById('chart-meanings'),
     signsGrid: document.getElementById('signs-grid'),
     shareBtn: document.getElementById('share-btn'),
-    upgradeBtn: document.getElementById('upgrade-btn')
+    upgradeBtn: document.getElementById('upgrade-btn'),
+    newReadingBtn: document.getElementById('new-reading-btn'),
+    premiumModal: document.getElementById('premium-modal'),
+    modalOverlay: document.getElementById('modal-overlay'),
+    modalClose: document.getElementById('modal-close'),
+    modalSkip: document.getElementById('modal-skip')
 };
 
 function init() {
@@ -21,7 +26,37 @@ function init() {
 function setupEventListeners() {
     elements.birthForm?.addEventListener('submit', handleFormSubmit);
     elements.shareBtn?.addEventListener('click', shareChart);
-    elements.upgradeBtn?.addEventListener('click', showPremiumUpsell);
+    elements.upgradeBtn?.addEventListener('click', showPremiumModal);
+    elements.newReadingBtn?.addEventListener('click', resetChart);
+    
+    elements.modalOverlay?.addEventListener('click', hidePremiumModal);
+    elements.modalClose?.addEventListener('click', hidePremiumModal);
+    elements.modalSkip?.addEventListener('click', hidePremiumModal);
+}
+
+function showPremiumModal() {
+    if (elements.premiumModal) {
+        elements.premiumModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+}
+
+function hidePremiumModal() {
+    if (elements.premiumModal) {
+        elements.premiumModal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+}
+
+function resetChart() {
+    currentChart = null;
+    document.getElementById('birth-date').value = '';
+    document.getElementById('birth-time').value = '';
+    document.getElementById('location').value = '';
+    elements.chartDisplay.style.display = 'none';
+    elements.readingSection.style.display = 'none';
+    elements.newReadingBtn.style.display = 'none';
+    elements.birthForm.scrollIntoView({ behavior: 'smooth' });
 }
 
 function handleFormSubmit(e) {
@@ -125,6 +160,7 @@ function showChart() {
     
     elements.chartDisplay.style.display = 'block';
     elements.readingSection.style.display = 'block';
+    elements.newReadingBtn.style.display = 'inline-block';
     
     elements.chartDisplay.scrollIntoView({ behavior: 'smooth' });
 }
@@ -168,7 +204,7 @@ Get your free chart at astrology.mdo3d.com`;
 }
 
 function showPremiumUpsell() {
-    alert('Full chart analysis with all planets, houses, and aspects coming soon! Unlock with a premium subscription.');
+    showPremiumModal();
 }
 
 document.addEventListener('DOMContentLoaded', init);
