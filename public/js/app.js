@@ -1,6 +1,13 @@
 import { signs, calculateSimplifiedChart, getChartInterpretation } from './services/database.js';
+import { firebaseConfig } from './config/firebase.js';
+
+// API Configuration
+const API_URL = window.location.hostname === 'localhost'
+  ? 'http://localhost:3007'
+  : 'https://astrology-api-alpha.vercel.app';
 
 let currentChart = null;
+let isPremium = false;
 
 const elements = {
     birthForm: document.getElementById('birth-form'),
@@ -206,5 +213,135 @@ Get your free chart at astrology.mdo3d.com`;
 function showPremiumUpsell() {
     showPremiumModal();
 }
+
+// API Integration Functions
+async function getPremiumReading(chart, question) {
+    try {
+        const response = await fetch(`${API_URL}/api/chart/interpret`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                chart,
+                question,
+                premium: true,
+                sessionId: window.PremiumEntitlement?.activeSessionId()
+            })
+        });
+
+        const data = await response.json();
+        if (data.success) {
+            return data.reading;
+        }
+        throw new Error(data.error || 'Failed to get reading');
+    } catch (error) {
+        console.error('API Error:', error);
+        return null;
+    }
+}
+
+function showPremiumReading(reading) {
+    if (!reading) return;
+
+    elements.chartMeanings.innerHTML = `
+        <div class="premium-reading">
+            <div class="premium-badge">AI-Powered Chart Analysis</div>
+
+            <div class="chart-section">
+                <h4>Your Cosmic Portrait</h4>
+                <p>${reading.cosmicPortrait}</p>
+            </div>
+
+            <div class="chart-section">
+                <div class="chart-section-header">
+                    <div class="symbol">${currentChart.sun.sign.symbol}</div>
+                    <div>
+                        <h4>${currentChart.sun.sign.name} Sun</h4>
+                        <span class="role">Your Core Identity</span>
+                    </div>
+                </div>
+                <p>${reading.sunSignReading}</p>
+            </div>
+
+            <div class="chart-section">
+                <div class="chart-section-header">
+                    <div class="symbol">${currentChart.moon.sign.symbol}</div>
+                    <div>
+                        <h4>${currentChart.moon.sign.name} Moon</h4>
+                        <span class="role">Your Emotional Nature</span>
+                    </div>
+                </div>
+                <p>${reading.moonSignReading}</p>
+            </div>
+
+            <div class="chart-section">
+                <div class="chart-section-header">
+                    <div class="symbol">${currentChart.rising.sign.symbol}</div>
+                    <div>
+                        <h4>${currentChart.rising.sign.name} Rising</h4>
+                        <span class="role">Your Outer Persona</span>
+                    </div>
+                </div>
+                <p>${reading.risingSignReading}</p>
+            </div>
+
+            ${reading.elementalBalance ? `
+            <div class="chart-section">
+                <h4>Elemental Balance</h4>
+                <p>${reading.elementalBalance}</p>
+            </div>
+            ` : ''}
+
+            ${reading.lifePathInsights && reading.lifePathInsights.length > 0 ? `
+            <div class="chart-section">
+                <h4>Life Path Insights</h4>
+                <ul class="insights-list">
+                    ${reading.lifePathInsights.map(i => `<li>${i}</li>`).join('')}
+                </ul>
+            </div>
+            ` : ''}
+
+            <div class="chart-section affirmation">
+                <h4>Your Cosmic Affirmation</h4>
+                <p><em>"${reading.affirmation}"</em></p>
+            </div>
+        </div>
+    `;
+}
+
+async function handlePremiumPurchase() {
+    // A verified, unused purchase (recorded by success.html) delivers directly — no second charge.
+    if (window.PremiumEntitlement?.has()) {
+        const question = document.getElementById('question-input')?.value || 'Your general question';
+        const reading = await getPremiumReading(currentChart, question);
+        if (reading) { window.PremiumEntitlement.consume(); showPremiumReading(reading); return; }
+        alert('Your purchase is confirmed, but the reading service is temporarily unavailable. Please try again shortly — you will not be charged again.');
+        return;
+    }
+    const email = prompt('Enter your email to receive your premium chart reading:');
+    if (!email) return;
+
+    try {
+        const response = await fetch(`${API_URL}/api/payment/create-checkout`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                readingType: 'birth-chart',
+                email
+            })
+        });
+
+        const data = await response.json();
+        if (data.success && data.checkoutUrl) {
+            window.location.href = data.checkoutUrl;
+        } else {
+            alert('Unable to process payment. Please try again.');
+        }
+    } catch (error) {
+        console.error('Payment error:', error);
+        alert('Payment error. Please try again.');
+    }
+}
+
+window.handlePremiumPurchase = handlePremiumPurchase;
 
 document.addEventListener('DOMContentLoaded', init);
