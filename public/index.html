@@ -10,7 +10,7 @@
     <meta property="og:description" content="Calculate your complete birth chart including Sun, Moon, and Rising signs. Get free astrology insights based on your cosmic blueprint.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://astrology.mdo3d.com">
-    <meta property="og:image" content="./og-image.jpg">
+    <meta property="og:image" content="https://astrology.mdo3d.com/og-image.jpg">
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:site_name" content="MDO3D">
@@ -19,7 +19,7 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Astrology Birth Chart - Free Calculator">
     <meta name="twitter:description" content="Calculate your complete birth chart including Sun, Moon, and Rising signs.">
-    <meta name="twitter:image" content="./og-image.jpg">
+    <meta name="twitter:image" content="https://astrology.mdo3d.com/og-image.jpg">
     
     <link rel="canonical" href="https://astrology.mdo3d.com">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230a0a1a'/><text x='16' y='24' font-size='18' text-anchor='middle' fill='%23ffd700'>☽</text></svg>">
@@ -37,7 +37,7 @@
             <div class="nav-links">
                 <a href="#how-it-works">How It Works</a>
                 <a href="#signs">Zodiac Signs</a>
-                <a href="#pricing">Premium</a>
+                <a href="#pricing">Pricing</a>
             </div>
         </nav>
     </header>
@@ -63,7 +63,7 @@
                     <div class="form-group">
                         <label for="location">Birth Location (optional)</label>
                         <input type="text" id="location" name="location" placeholder="City, Country">
-                        <span class="hint">Used for house calculations</span>
+                        <span class="hint">Included when you share your chart</span>
                     </div>
                     
                     <button type="submit" class="btn-primary btn-calculate">
@@ -101,11 +101,12 @@
                             <li>✨ AI-generated personality profile</li>
                             <li>✨ Compatibility insights</li>
                         </ul>
-                        <button class="btn-premium" id="upgrade-btn" onclick="handlePremiumPurchase()">
+                        <button class="btn-premium" id="upgrade-btn">
                             Get Full Chart - $9.99
                         </button>
                     </div>
 
+                    <div class="result-actions">
                     <button class="btn-share" id="share-btn">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <circle cx="18" cy="5" r="3"></circle>
@@ -118,6 +119,7 @@
                     </button>
                     
                     <button class="btn-secondary" id="new-reading-btn">New Chart</button>
+                    </div>
                 </div>
             </div>
         </section>
@@ -187,7 +189,7 @@
                             <li>Element analysis</li>
                             <li>Share chart</li>
                         </ul>
-                        <button class="btn-secondary">Get Started</button>
+                        <button class="btn-secondary" id="get-started-btn">Get Started</button>
                     </div>
                     <div class="pricing-card featured">
                         <div class="badge">Most Popular</div>
@@ -211,8 +213,7 @@
         <div class="container">
             <p>&copy; 2024 Astrology Chart. All rights reserved.</p>
             <div class="footer-links">
-                <a href="#">Privacy Policy</a>
-                <a href="#">Terms of Service</a>
+                <a href="https://mdo3d.com">Part of the MDO3D suite</a>
             </div>
         </div>
     </footer>

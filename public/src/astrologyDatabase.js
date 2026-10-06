@@ -182,7 +182,7 @@ export const getSignForDate = (month, day) => {
     { end: [10, 22], sign: 7 },
     { end: [11, 21], sign: 8 },
     { end: [12, 21], sign: 9 },
-    { end: [12, 31], sign: 9 }
+    { end: [12, 31], sign: 10 } // Dec 22-31 is Capricorn (was 9 = Sagittarius)
   ];
   
   for (const entry of signMap) {
@@ -194,10 +194,9 @@ export const getSignForDate = (month, day) => {
 };
 
 export const calculateSimplifiedChart = (birthDate, birthTime, location) => {
-  const date = new Date(birthDate);
-  const month = date.getMonth() + 1;
-  const day = date.getDate();
-  const year = date.getFullYear();
+  // Parse "YYYY-MM-DD" as calendar parts. new Date("YYYY-MM-DD") is UTC midnight,
+  // so getDate() in any timezone west of UTC returned the previous day.
+  const [year, month, day] = String(birthDate).split('-').map(Number);
   
   const sunSign = getSignForDate(month, day);
   

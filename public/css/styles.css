@@ -236,7 +236,7 @@ header nav {
 .chart-sunmoon {
     display: flex;
     justify-content: center;
-    gap: 40px;
+    gap: 30px; /* 3 x 280px + 2 x 30px = 900px: keeps all three cards on one row */
     flex-wrap: wrap;
     margin-bottom: 40px;
 }
@@ -292,6 +292,7 @@ header nav {
 .sign-card .element {
     font-size: 0.9rem;
     color: var(--text);
+    text-transform: capitalize;
 }
 
 .sign-card .ruler {
@@ -413,6 +414,18 @@ header nav {
 .premium-features li {
     padding: 8px 0;
     color: var(--text);
+}
+
+.result-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+}
+
+.result-actions .btn-share {
+    margin: 0;
 }
 
 .btn-share {
@@ -588,8 +601,21 @@ header nav {
 
 .signs-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    /* 12 signs: 6 / 4 / 3 / 2 columns divide evenly, so no orphan row */
+    grid-template-columns: repeat(6, 1fr);
     gap: 20px;
+}
+
+@media (max-width: 1000px) {
+    .signs-grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+@media (max-width: 768px) {
+    .signs-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 480px) {
+    .signs-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
 .sign-card-grid {
@@ -597,15 +623,7 @@ header nav {
     border-radius: 12px;
     padding: 25px;
     text-align: center;
-    cursor: pointer;
-    transition: transform 0.3s, box-shadow 0.3s;
     border: 1px solid transparent;
-}
-
-.sign-card-grid:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(255, 215, 0, 0.1);
-    border-color: rgba(255, 215, 0, 0.3);
 }
 
 .sign-card-grid .symbol {
@@ -650,6 +668,13 @@ header nav {
     text-align: center;
     border: 1px solid rgba(255, 215, 0, 0.1);
     position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.pricing-card > button {
+    margin-top: auto;
+    align-self: center;
 }
 
 .pricing-card.featured {
@@ -733,7 +758,45 @@ footer p {
         max-width: 300px;
     }
     
-    .nav-links {
-        display: none;
+    header nav {
+        flex-direction: column;
+        gap: 10px;
     }
+
+    .nav-links {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 6px 18px;
+    }
+
+    .nav-links a {
+        margin-left: 0;
+    }
+}
+
+/* Premium (paid) reading */
+.premium-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 25px;
+}
+
+.insights-list {
+    padding-left: 1.4rem;
+    line-height: 1.8;
+}
+
+.insights-list li {
+    margin-bottom: 8px;
+}
+
+.chart-section.affirmation {
+    border-top: 1px solid rgba(255, 215, 0, 0.2);
+    padding-top: 20px;
 }

@@ -22,12 +22,48 @@ const elements = {
     premiumModal: document.getElementById('premium-modal'),
     modalOverlay: document.getElementById('modal-overlay'),
     modalClose: document.getElementById('modal-close'),
-    modalSkip: document.getElementById('modal-skip')
+    modalSkip: document.getElementById('modal-skip'),
+    premiumUpsell: document.getElementById('premium-upsell'),
+    getStartedBtn: document.getElementById('get-started-btn')
 };
+
+// Escape text before interpolating API output into innerHTML.
+function esc(s) {
+    return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+const PENDING_KEY = 'astrology_pending_chart';
 
 function init() {
     setupEventListeners();
     renderSignsGrid();
+    restorePendingChart();
+}
+
+// After a Stripe redirect the page reloads and the chart is lost. The birth data is
+// saved before checkout; if a verified credit exists on return, restore it and deliver.
+function savePendingChart() {
+    if (!currentChart) return;
+    try {
+        sessionStorage.setItem(PENDING_KEY, JSON.stringify({
+            birthDate: currentChart.birthDate,
+            birthTime: currentChart.birthTime || '',
+            location: currentChart.location || ''
+        }));
+    } catch (e) { /* storage unavailable — user can re-enter */ }
+}
+
+function restorePendingChart() {
+    let saved = null;
+    try { saved = JSON.parse(sessionStorage.getItem(PENDING_KEY)); } catch (e) { saved = null; }
+    if (!saved || !saved.birthDate || !window.PremiumEntitlement?.has()) return;
+    try { sessionStorage.removeItem(PENDING_KEY); } catch (e) {}
+    document.getElementById('birth-date').value = saved.birthDate;
+    document.getElementById('birth-time').value = saved.birthTime;
+    document.getElementById('location').value = saved.location;
+    currentChart = calculateSimplifiedChart(saved.birthDate, saved.birthTime, saved.location);
+    showChart();
+    handlePremiumPurchase();
 }
 
 function setupEventListeners() {
@@ -35,6 +71,10 @@ function setupEventListeners() {
     elements.shareBtn?.addEventListener('click', shareChart);
     elements.upgradeBtn?.addEventListener('click', showPremiumModal);
     elements.newReadingBtn?.addEventListener('click', resetChart);
+    elements.getStartedBtn?.addEventListener('click', () => {
+        elements.birthForm?.scrollIntoView({ behavior: 'smooth' });
+        document.getElementById('birth-date')?.focus({ preventScroll: true });
+    });
     
     elements.modalOverlay?.addEventListener('click', hidePremiumModal);
     elements.modalClose?.addEventListener('click', hidePremiumModal);
@@ -99,7 +139,6 @@ function showChart() {
                 <div class="symbol">${currentChart.moon.sign.symbol}</div>
                 <div class="title">Moon Sign</div>
                 <div class="name">${currentChart.moon.sign.name}</div>
-                <div class="dates">${currentChart.moon.sign.dates}</div>
                 <div class="element">${currentChart.moon.sign.element} • ${currentChart.moon.sign.quality}</div>
                 <div class="ruler">Ruled by ${currentChart.moon.sign.ruler}</div>
             </div>
@@ -107,7 +146,6 @@ function showChart() {
                 <div class="symbol">${currentChart.rising.sign.symbol}</div>
                 <div class="title">Rising Sign</div>
                 <div class="name">${currentChart.rising.sign.name}</div>
-                <div class="dates">${currentChart.rising.sign.dates}</div>
                 <div class="element">${currentChart.rising.sign.element} • ${currentChart.rising.sign.quality}</div>
                 <div class="ruler">Ruled by ${currentChart.rising.sign.ruler}</div>
             </div>
@@ -165,6 +203,7 @@ function showChart() {
         </div>
     `;
     
+    if (elements.premiumUpsell) elements.premiumUpsell.style.display = '';
     elements.chartDisplay.style.display = 'block';
     elements.readingSection.style.display = 'block';
     elements.newReadingBtn.style.display = 'inline-block';
@@ -248,7 +287,7 @@ function showPremiumReading(reading) {
 
             <div class="chart-section">
                 <h4>Your Cosmic Portrait</h4>
-                <p>${reading.cosmicPortrait}</p>
+                <p>${esc(reading.cosmicPortrait)}</p>
             </div>
 
             <div class="chart-section">
@@ -259,7 +298,7 @@ function showPremiumReading(reading) {
                         <span class="role">Your Core Identity</span>
                     </div>
                 </div>
-                <p>${reading.sunSignReading}</p>
+                <p>${esc(reading.sunSignReading)}</p>
             </div>
 
             <div class="chart-section">
@@ -270,7 +309,7 @@ function showPremiumReading(reading) {
                         <span class="role">Your Emotional Nature</span>
                     </div>
                 </div>
-                <p>${reading.moonSignReading}</p>
+                <p>${esc(reading.moonSignReading)}</p>
             </div>
 
             <div class="chart-section">
@@ -281,13 +320,13 @@ function showPremiumReading(reading) {
                         <span class="role">Your Outer Persona</span>
                     </div>
                 </div>
-                <p>${reading.risingSignReading}</p>
+                <p>${esc(reading.risingSignReading)}</p>
             </div>
 
             ${reading.elementalBalance ? `
             <div class="chart-section">
                 <h4>Elemental Balance</h4>
-                <p>${reading.elementalBalance}</p>
+                <p>${esc(reading.elementalBalance)}</p>
             </div>
             ` : ''}
 
@@ -295,22 +334,31 @@ function showPremiumReading(reading) {
             <div class="chart-section">
                 <h4>Life Path Insights</h4>
                 <ul class="insights-list">
-                    ${reading.lifePathInsights.map(i => `<li>${i}</li>`).join('')}
+                    ${reading.lifePathInsights.map(i => `<li>${esc(i)}</li>`).join('')}
                 </ul>
             </div>
             ` : ''}
 
             <div class="chart-section affirmation">
                 <h4>Your Cosmic Affirmation</h4>
-                <p><em>"${reading.affirmation}"</em></p>
+                <p><em>"${esc(reading.affirmation)}"</em></p>
             </div>
         </div>
     `;
+    // The reading has been delivered — don't keep selling it.
+    if (elements.premiumUpsell) elements.premiumUpsell.style.display = 'none';
+    elements.chartMeanings.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 async function handlePremiumPurchase() {
+    hidePremiumModal();
     // A verified, unused purchase (recorded by success.html) delivers directly — no second charge.
     if (window.PremiumEntitlement?.has()) {
+        if (!currentChart) {
+            alert('Your full-chart credit is ready. Enter your birth details and calculate your chart first, then choose "Get Full Chart" to use it.');
+            elements.birthForm?.scrollIntoView({ behavior: 'smooth' });
+            return;
+        }
         const question = document.getElementById('question-input')?.value || 'Your general question';
         const reading = await getPremiumReading(currentChart, question);
         if (reading) { window.PremiumEntitlement.consume(); showPremiumReading(reading); return; }
@@ -332,6 +380,7 @@ async function handlePremiumPurchase() {
 
         const data = await response.json();
         if (data.success && data.checkoutUrl) {
+            savePendingChart();
             window.location.href = data.checkoutUrl;
         } else {
             alert('Unable to process payment. Please try again.');
