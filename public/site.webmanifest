@@ -1,0 +1,33 @@
+{
+  "name": "Astrology — MDO3D Guidance",
+  "short_name": "Astrology",
+  "description": "Enter your birth date, time and place to calculate your Sun, Moon and Rising signs, explore your birth chart, and request an optional AI astrology reading.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0a0a1a",
+  "theme_color": "#ffd700",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
