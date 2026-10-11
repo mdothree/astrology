@@ -374,7 +374,8 @@ async function handlePremiumPurchase() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 readingType: 'birth-chart',
-                email
+                email,
+                attribution: window.MdoAttribution?.get()
             })
         });
 
