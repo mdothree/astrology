@@ -119,6 +119,13 @@ function setupEventListeners() {
         birthDateInput.max = todayISO();
         birthDateInput.addEventListener('input', () => showBirthDateError(''));
     }
+    // C7B-COLOR-STALE-RESULT (astrology): editing any input after a chart is shown
+    // marks that chart as out of date until the form is submitted again.
+    ['birth-date', 'birth-time', 'location'].forEach((id) => {
+        const input = document.getElementById(id);
+        input?.addEventListener('input', updateStaleState);
+        input?.addEventListener('change', updateStaleState);
+    });
     elements.birthForm?.addEventListener('submit', handleFormSubmit);
     elements.shareBtn?.addEventListener('click', shareChart);
     elements.upgradeBtn?.addEventListener('click', showPremiumModal);
@@ -147,8 +154,50 @@ function hidePremiumModal() {
     }
 }
 
+function readInputs() {
+    return {
+        birthDate: document.getElementById('birth-date')?.value || '',
+        birthTime: document.getElementById('birth-time')?.value || '',
+        location: document.getElementById('location')?.value || ''
+    };
+}
+
+function setStale(stale) {
+    let note = document.getElementById('chart-stale-note');
+    if (stale && !note && elements.chartDisplay) {
+        note = document.createElement('p');
+        note.id = 'chart-stale-note';
+        note.setAttribute('role', 'status');
+        note.style.cssText = 'margin:0 0 1rem;padding:.75rem 1rem;border-radius:8px;background:#fff3cd;color:#111;font-weight:600;';
+        note.textContent = 'Your details changed. Press the button again to update this chart.';
+        elements.chartDisplay.prepend(note);
+    }
+    if (note) note.hidden = !stale;
+    [elements.chartResult, elements.readingSection].forEach((el) => {
+        if (el) el.style.opacity = stale ? '0.45' : '';
+    });
+}
+
+function updateStaleState() {
+    if (!currentChart) return;
+    const v = readInputs();
+    const same = v.birthDate === currentChart.birthDate &&
+        v.birthTime === (currentChart.birthTime || '') &&
+        v.location === (currentChart.location || '');
+    setStale(!same);
+}
+
+function hideChart() {
+    currentChart = null;
+    setStale(false);
+    elements.chartDisplay.style.display = 'none';
+    elements.readingSection.style.display = 'none';
+    elements.newReadingBtn.style.display = 'none';
+}
+
 function resetChart() {
     currentChart = null;
+    setStale(false);
     document.getElementById('birth-date').value = '';
     document.getElementById('birth-time').value = '';
     document.getElementById('location').value = '';
@@ -169,12 +218,15 @@ function handleFormSubmit(e) {
     const dateError = validateBirthDate(birthDate);
     showBirthDateError(dateError);
     if (dateError) {
+        // Never leave a previous chart on screen next to an invalid date.
+        hideChart();
         document.getElementById('birth-date')?.focus();
         return;
     }
     
     currentChart = calculateSimplifiedChart(birthDate, birthTime, location);
     showChart();
+    setStale(false);
 }
 
 function showChart() {
