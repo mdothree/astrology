@@ -349,7 +349,7 @@ Rising: ${currentChart.rising.sign.name} ${currentChart.rising.sign.symbol}` : '
 Born: ${currentChart.birthDate}
 ${currentChart.location ? `Location: ${currentChart.location}` : ''}
 
-Get your free chart at astrology.mdo3d.com`;
+Get your chart at astrology.mdo3d.com`;
     
     if (navigator.share) {
         navigator.share({
