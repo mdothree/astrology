@@ -1,4 +1,4 @@
-import { signs, calculateSimplifiedChart, getChartInterpretation } from './services/database.js';
+import { signs, calculateSimplifiedChart } from './services/database.js';
 import { firebaseConfig } from './config/firebase.js';
 
 // API Configuration
@@ -8,6 +8,12 @@ const API_URL = window.location.hostname === 'localhost'
 
 let currentChart = null;
 let isPremium = false;
+// Set when the API refuses the stored purchase (402/403) so checkout is offered.
+let entitlementRejected = false;
+
+function hasPurchase() {
+    return !entitlementRejected && window.PremiumEntitlement?.has() === true;
+}
 
 const elements = {
     birthForm: document.getElementById('birth-form'),
@@ -109,8 +115,8 @@ function restorePendingChart() {
     document.getElementById('birth-time').value = saved.birthTime;
     document.getElementById('location').value = saved.location;
     currentChart = calculateSimplifiedChart(saved.birthDate, saved.birthTime, saved.location);
+    // showChart() delivers the paid reading itself when a credit exists.
     showChart();
-    handlePremiumPurchase();
 }
 
 function setupEventListeners() {
@@ -230,12 +236,9 @@ function handleFormSubmit(e) {
 }
 
 function showChart() {
-    const interpretation = getChartInterpretation(currentChart);
     const timed = hasBirthTime(currentChart);
-    const personality = timed
-        ? interpretation.personality
-        : `As a ${currentChart.sun.sign.name}, you embody the ${currentChart.sun.sign.element} energy of ${currentChart.sun.sign.name}. Add your birth time to see your Moon and Rising signs.`;
-    
+    entitlementRejected = false;
+
     elements.chartResult.innerHTML = `
         <div class="chart-sunmoon">
             <div class="sign-card">
@@ -264,65 +267,32 @@ function showChart() {
         </div>
     `;
     
-    elements.chartMeanings.innerHTML = `
-        <div class="chart-section">
-            <div class="chart-section-header">
-                <div class="symbol">${currentChart.sun.sign.symbol}</div>
-                <div>
-                    <h4>${currentChart.sun.sign.name} Sun</h4>
-                    <span class="role">Your Core Identity</span>
-                </div>
-            </div>
-            <p>${interpretation.sun.interpretation.traits}</p>
-            <ul>
-                <li>Strengths: ${interpretation.sun.interpretation.strengths.join(', ')}</li>
-                <li>Growth Areas: ${interpretation.sun.interpretation.challenges.join(', ')}</li>
-            </ul>
-        </div>
-        
-        ${timed ? `
-        <div class="chart-section">
-            <div class="chart-section-header">
-                <div class="symbol">${currentChart.moon.sign.symbol}</div>
-                <div>
-                    <h4>${currentChart.moon.sign.name} Moon</h4>
-                    <span class="role">Your Emotional Nature</span>
-                </div>
-            </div>
-            <p>${interpretation.moon.interpretation.traits}</p>
-            <ul>
-                <li>Strengths: ${interpretation.moon.interpretation.strengths.join(', ')}</li>
-                <li>Growth Areas: ${interpretation.moon.interpretation.challenges.join(', ')}</li>
-            </ul>
-        </div>
-        
-        <div class="chart-section">
-            <div class="chart-section-header">
-                <div class="symbol">${currentChart.rising.sign.symbol}</div>
-                <div>
-                    <h4>${currentChart.rising.sign.name} Rising</h4>
-                    <span class="role">Your Outer Persona</span>
-                </div>
-            </div>
-            <p>${interpretation.rising.interpretation.traits}</p>
-            <ul>
-                <li>Strengths: ${interpretation.rising.interpretation.strengths.join(', ')}</li>
-                <li>Growth Areas: ${interpretation.rising.interpretation.challenges.join(', ')}</li>
-            </ul>
-        </div>
-        ` : ''}
-        
-        <div class="personality-summary">
-            ${personality}
-        </div>
-    `;
-    
-    if (elements.premiumUpsell) elements.premiumUpsell.style.display = '';
+    // Paid from first use (JARVIS #94): the signs above are the chart
+    // calculation; their interpretation is the paid AI reading. With a verified
+    // purchase it is delivered here; without one, only the checkout prompt shows.
+    elements.chartMeanings.innerHTML = '';
+    if (elements.premiumUpsell) elements.premiumUpsell.style.display = hasPurchase() ? 'none' : '';
     elements.chartDisplay.style.display = 'block';
     elements.readingSection.style.display = 'block';
     elements.newReadingBtn.style.display = 'inline-block';
     
     elements.chartDisplay.scrollIntoView({ behavior: 'smooth' });
+
+    if (hasPurchase()) deliverPaidReading();
+}
+
+async function deliverPaidReading() {
+    elements.chartMeanings.innerHTML = '<p>✨ Channeling your AI chart reading...</p>';
+    const question = document.getElementById('question-input')?.value || 'Your general question';
+    const reading = await getPremiumReading(currentChart, question);
+    if (reading) { window.PremiumEntitlement.consume(); showPremiumReading(reading); return; }
+    if (entitlementRejected) {
+        // The purchase on this device was used up: offer checkout again.
+        elements.chartMeanings.innerHTML = '';
+        if (elements.premiumUpsell) elements.premiumUpsell.style.display = '';
+        return;
+    }
+    elements.chartMeanings.innerHTML = '<p>Your purchase is confirmed, but the reading service is temporarily unavailable. Please try again shortly — you will not be charged again.</p>';
 }
 
 function renderSignsGrid() {
@@ -381,6 +351,10 @@ async function getPremiumReading(chart, question) {
             })
         });
 
+        if (response.status === 402 || response.status === 403) {
+            entitlementRejected = true;
+            return null;
+        }
         const data = await response.json();
         if (data.success) {
             return data.reading;
@@ -469,17 +443,14 @@ function showPremiumReading(reading) {
 async function handlePremiumPurchase() {
     hidePremiumModal();
     // A verified, unused purchase (recorded by success.html) delivers directly — no second charge.
-    if (window.PremiumEntitlement?.has()) {
+    if (hasPurchase()) {
         if (!currentChart) {
             alert('Your full-chart credit is ready. Enter your birth details and calculate your chart first, then choose "Get Full Chart" to use it.');
             elements.birthForm?.scrollIntoView({ behavior: 'smooth' });
             return;
         }
-        const question = document.getElementById('question-input')?.value || 'Your general question';
-        const reading = await getPremiumReading(currentChart, question);
-        if (reading) { window.PremiumEntitlement.consume(); showPremiumReading(reading); return; }
-        alert('Your purchase is confirmed, but the reading service is temporarily unavailable. Please try again shortly — you will not be charged again.');
-        return;
+        await deliverPaidReading();
+        if (!entitlementRejected) return;
     }
     const email = prompt('Enter your email to receive your premium chart reading:');
     if (!email) return;
