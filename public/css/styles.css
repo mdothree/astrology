@@ -817,3 +817,14 @@ footer p {
 @media (max-width: 768px) {
     .nav-links a, .footer-links a { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; min-width: 44px; }
 }
+
+/* MOBILE-WARN: phone header. Below 768px the header stacked logo and links into two
+   centred rows (123px tall). At phone widths they fit one row: smaller logo/links,
+   tighter header padding. Wrap stays as a fallback; 44px tap targets kept. */
+@media (max-width: 400px) {
+    header { padding: 6px 0; }
+    header nav { flex-direction: row; flex-wrap: wrap; justify-content: space-between; gap: 0 8px; }
+    .logo h1 { font-size: 1.1rem; line-height: 1.3; white-space: nowrap; }
+    .nav-links { flex-wrap: nowrap; justify-content: flex-end; gap: 10px; }
+    .nav-links a { font-size: .8rem; white-space: nowrap; }
+}
