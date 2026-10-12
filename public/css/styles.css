@@ -800,3 +800,15 @@ footer p {
     border-top: 1px solid rgba(255, 215, 0, 0.2);
     padding-top: 20px;
 }
+
+/* C7B-ASTRO-NO-VALIDATION */
+.form-group .field-error {
+    display: block;
+    color: #ff8a8a;
+    font-size: 0.85rem;
+    margin-top: 5px;
+}
+.form-group .field-error[hidden] { display: none; }
+.form-group input[aria-invalid="true"] { border-color: #ff8a8a; }
+.sign-card-needs-time { opacity: 0.7; }
+.sign-card-needs-time .name { font-size: 1rem; }
