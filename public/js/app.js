@@ -170,7 +170,7 @@ function setStale(stale) {
         note.setAttribute('role', 'status');
         note.style.cssText = 'margin:0 0 1rem;padding:.75rem 1rem;border-radius:8px;background:#fff3cd;color:#111;font-weight:600;';
         note.textContent = 'Your details changed. Press the button again to update this chart.';
-        elements.chartDisplay.prepend(note);
+        (elements.chartDisplay.querySelector('.container') || elements.chartDisplay).prepend(note);
     }
     if (note) note.hidden = !stale;
     [elements.chartResult, elements.readingSection].forEach((el) => {
