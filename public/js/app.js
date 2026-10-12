@@ -27,6 +27,53 @@ const elements = {
     getStartedBtn: document.getElementById('get-started-btn')
 };
 
+// C7B-ASTRO-NO-VALIDATION: birth date must be a real date, 1900 or later, not in the future.
+function todayISO() {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+function validateBirthDate(value) {
+    if (!value) return 'Please enter your birth date.';
+    const m = /^(\d{4,})-(\d{2})-(\d{2})$/.exec(value);
+    if (!m) return 'Please enter a valid birth date.';
+    const year = Number(m[1]);
+    if (year < 1900) return 'Please enter a birth year of 1900 or later.';
+    const date = new Date(year, Number(m[2]) - 1, Number(m[3]));
+    if (Number.isNaN(date.getTime()) || date.getMonth() !== Number(m[2]) - 1) {
+        return 'Please enter a valid birth date.';
+    }
+    const now = new Date();
+    if (date > new Date(now.getFullYear(), now.getMonth(), now.getDate())) {
+        return 'Your birth date cannot be in the future.';
+    }
+    return '';
+}
+
+function showBirthDateError(message) {
+    const el = document.getElementById('birth-date-error');
+    if (el) {
+        el.textContent = message;
+        el.hidden = !message;
+    }
+    document.getElementById('birth-date')?.setAttribute('aria-invalid', message ? 'true' : 'false');
+}
+
+// Moon and Rising depend on the birth time; without it we don't show values.
+function hasBirthTime(chart) {
+    return Boolean(chart && chart.birthTime);
+}
+
+function needsTimeCard(title) {
+    return `
+            <div class="sign-card sign-card-needs-time">
+                <div class="symbol" aria-hidden="true">?</div>
+                <div class="title">${title}</div>
+                <div class="name">Needs birth time</div>
+                <div class="element">Add your birth time above to calculate it</div>
+            </div>`;
+}
+
 // Escape text before interpolating API output into innerHTML.
 function esc(s) {
     return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -67,6 +114,11 @@ function restorePendingChart() {
 }
 
 function setupEventListeners() {
+    const birthDateInput = document.getElementById('birth-date');
+    if (birthDateInput) {
+        birthDateInput.max = todayISO();
+        birthDateInput.addEventListener('input', () => showBirthDateError(''));
+    }
     elements.birthForm?.addEventListener('submit', handleFormSubmit);
     elements.shareBtn?.addEventListener('click', shareChart);
     elements.upgradeBtn?.addEventListener('click', showPremiumModal);
@@ -100,6 +152,7 @@ function resetChart() {
     document.getElementById('birth-date').value = '';
     document.getElementById('birth-time').value = '';
     document.getElementById('location').value = '';
+    showBirthDateError('');
     elements.chartDisplay.style.display = 'none';
     elements.readingSection.style.display = 'none';
     elements.newReadingBtn.style.display = 'none';
@@ -113,8 +166,10 @@ function handleFormSubmit(e) {
     const birthTime = document.getElementById('birth-time').value;
     const location = document.getElementById('location').value;
     
-    if (!birthDate) {
-        alert('Please enter your birth date');
+    const dateError = validateBirthDate(birthDate);
+    showBirthDateError(dateError);
+    if (dateError) {
+        document.getElementById('birth-date')?.focus();
         return;
     }
     
@@ -124,6 +179,10 @@ function handleFormSubmit(e) {
 
 function showChart() {
     const interpretation = getChartInterpretation(currentChart);
+    const timed = hasBirthTime(currentChart);
+    const personality = timed
+        ? interpretation.personality
+        : `As a ${currentChart.sun.sign.name}, you embody the ${currentChart.sun.sign.element} energy of ${currentChart.sun.sign.name}. Add your birth time to see your Moon and Rising signs.`;
     
     elements.chartResult.innerHTML = `
         <div class="chart-sunmoon">
@@ -135,6 +194,7 @@ function showChart() {
                 <div class="element">${currentChart.sun.sign.element} • ${currentChart.sun.sign.quality}</div>
                 <div class="ruler">Ruled by ${currentChart.sun.sign.ruler}</div>
             </div>
+            ${timed ? `
             <div class="sign-card">
                 <div class="symbol">${currentChart.moon.sign.symbol}</div>
                 <div class="title">Moon Sign</div>
@@ -148,7 +208,7 @@ function showChart() {
                 <div class="name">${currentChart.rising.sign.name}</div>
                 <div class="element">${currentChart.rising.sign.element} • ${currentChart.rising.sign.quality}</div>
                 <div class="ruler">Ruled by ${currentChart.rising.sign.ruler}</div>
-            </div>
+            </div>` : needsTimeCard('Moon Sign') + needsTimeCard('Rising Sign')}
         </div>
     `;
     
@@ -168,6 +228,7 @@ function showChart() {
             </ul>
         </div>
         
+        ${timed ? `
         <div class="chart-section">
             <div class="chart-section-header">
                 <div class="symbol">${currentChart.moon.sign.symbol}</div>
@@ -197,9 +258,10 @@ function showChart() {
                 <li>Growth Areas: ${interpretation.rising.interpretation.challenges.join(', ')}</li>
             </ul>
         </div>
+        ` : ''}
         
         <div class="personality-summary">
-            ${interpretation.personality}
+            ${personality}
         </div>
     `;
     
@@ -229,8 +291,8 @@ function shareChart() {
     const text = `My Astrology Chart:
     
 Sun: ${currentChart.sun.sign.name} ${currentChart.sun.sign.symbol}
-Moon: ${currentChart.moon.sign.name} ${currentChart.moon.sign.symbol}
-Rising: ${currentChart.rising.sign.name} ${currentChart.rising.sign.symbol}
+${hasBirthTime(currentChart) ? `Moon: ${currentChart.moon.sign.name} ${currentChart.moon.sign.symbol}
+Rising: ${currentChart.rising.sign.name} ${currentChart.rising.sign.symbol}` : 'Moon & Rising: need birth time'}
 
 Born: ${currentChart.birthDate}
 ${currentChart.location ? `Location: ${currentChart.location}` : ''}
@@ -301,6 +363,7 @@ function showPremiumReading(reading) {
                 <p>${esc(reading.sunSignReading)}</p>
             </div>
 
+            ${hasBirthTime(currentChart) ? `
             <div class="chart-section">
                 <div class="chart-section-header">
                     <div class="symbol">${currentChart.moon.sign.symbol}</div>
@@ -322,6 +385,7 @@ function showPremiumReading(reading) {
                 </div>
                 <p>${esc(reading.risingSignReading)}</p>
             </div>
+            ` : ''}
 
             ${reading.elementalBalance ? `
             <div class="chart-section">
