@@ -142,7 +142,7 @@
                             <li>✨ Compatibility insights</li>
                         </ul>
                         <button class="btn-premium" id="upgrade-btn">
-                            Get Full Chart - $9.99
+                            Get Full Chart - <span data-price="birth-chart">$5</span>
                         </button>
                     </div>
 
@@ -178,7 +178,7 @@
                     <li>✨ Compatibility insights</li>
                 </ul>
                 <button class="btn-premium modal-btn" id="modal-upgrade-btn" onclick="handlePremiumPurchase()">
-                    Get Full Chart - $9.99
+                    Get Full Chart - <span data-price="birth-chart">$5</span>
                 </button>
                 <button class="modal-skip" id="modal-skip">Maybe Later</button>
             </div>
@@ -220,21 +220,10 @@
             <div class="container">
                 <h2>Pricing</h2>
                 <div class="pricing-cards">
-                    <div class="pricing-card">
-                        <h3>Basic</h3>
-                        <div class="price">$0</div>
-                        <ul>
-                            <li>Sun, Moon, Rising signs</li>
-                            <li>Basic interpretations</li>
-                            <li>Element analysis</li>
-                            <li>Share chart</li>
-                        </ul>
-                        <button class="btn-secondary" id="get-started-btn">Get Started</button>
-                    </div>
                     <div class="pricing-card featured">
                         <div class="badge">Most Popular</div>
                         <h3>Full Chart</h3>
-                        <div class="price">$9.99</div>
+                        <div class="price" data-price="birth-chart">$5</div>
                         <ul>
                             <li>Complete 10-planet chart</li>
                             <li>12 houses calculated</li>
@@ -260,6 +249,7 @@
 
     <!-- Firebase is optional and lazy-loaded by js/config/firebase.js (off by default). -->
 
+    <script src="js/price-display.js"></script>
     <script src="js/entitlement.js"></script>
     <script src="js/app.js" type="module"></script>
 </body>
