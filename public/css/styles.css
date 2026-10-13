@@ -876,3 +876,7 @@ html[data-theme="dark"] .mdo-theme .mdo-i-moon, html:not([data-theme="dark"]) .m
     .nav-links a { font-size: .75rem; min-width: 0; }
     .logo h1 { font-size: 1rem; }
 }
+
+/* Paid from first use: the meanings card is empty until the paid reading is delivered.
+   Never render an empty card; the upsell below says what unlocks it. */
+.chart-meanings:empty { display: none; }
