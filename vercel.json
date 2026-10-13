@@ -56,5 +56,11 @@
       "destination": "https://mdo3d.com/privacy",
       "permanent": false
     }
-  ]
+  ],
+  "git": {
+    "deploymentEnabled": {
+      "**": false,
+      "master": true
+    }
+  }
 }
