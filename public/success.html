@@ -52,6 +52,10 @@
   html[data-theme="light"] p { color:#4f4670; }
   html[data-theme="light"] .spinner { border-color:rgba(0,0,0,0.15); border-top-color:#6d28d9; }
   .mdo-theme{display:inline-flex;align-items:center;justify-content:center;flex:none;width:44px;height:44px;padding:0;border:1.5px solid rgba(160,160,160,.55);border-radius:10px;background:transparent;color:inherit;cursor:pointer;font:inherit}html[data-theme="light"] .mdo-theme{border-color:rgba(60,60,70,.45)}.mdo-theme:focus-visible{outline:3px solid currentColor;outline-offset:2px}.mdo-theme .mdo-i{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}html[data-theme="dark"] .mdo-theme .mdo-i-moon,html:not([data-theme="dark"]) .mdo-theme .mdo-i-sun{display:none}
+  .got { font-size:0.95rem; }
+  .next { margin:1.25rem 0 0; font-size:0.95rem; }
+  .next a { color:#c4b5fd; font-weight:600; }
+  html[data-theme="light"] .next a { color:#5b21b6; }
 </style>
 <style>.skip-link{position:absolute;left:-9999px;top:8px;z-index:10000;padding:8px 16px;background:#111111;color:#ffffff;font-weight:600;text-decoration:none;border-radius:4px}.skip-link:focus{left:8px;top:8px}</style>
   <script src="/js/consent.js" defer></script>
@@ -70,7 +74,9 @@
     <div class="icon">⭐</div>
     <h1>Payment confirmed</h1>
     <p>Your premium reading is unlocked. Return to the app and your credit will be applied automatically.</p>
+    <p class="got"><strong>What you got:</strong> one AI birth-chart reading: all 10 planets placed, 12 houses, major aspects, a personality profile and compatibility insights (saved in this browser on this device).</p>
     <a class="btn" href="/">Continue to your reading →</a>
+    <p class="next">Next step: <a href="https://numerology.mdo3d.com/">try Numerology &rarr;</a></p>
   </div>
   <div id="failed" class="hidden">
     <div class="icon">⚠️</div>
