@@ -880,3 +880,8 @@ html[data-theme="dark"] .mdo-theme .mdo-i-moon, html:not([data-theme="dark"]) .m
 /* Paid from first use: the meanings card is empty until the paid reading is delivered.
    Never render an empty card; the upsell below says what unlocks it. */
 .chart-meanings:empty { display: none; }
+
+/* HID-005: honour prefers-reduced-motion (the starfield twinkle and other decorative motion stop) */
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+}
