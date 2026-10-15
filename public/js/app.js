@@ -452,7 +452,7 @@ async function handlePremiumPurchase() {
         await deliverPaidReading();
         if (!entitlementRejected) return;
     }
-    const email = prompt('Enter your email to receive your premium chart reading:');
+    const email = prompt('Enter your email for your Stripe receipt. Your reading appears on this site after payment:');
     if (!email) return;
 
     try {
