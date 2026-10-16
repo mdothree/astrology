@@ -382,7 +382,7 @@ header nav {
     padding: 25px;
     margin-top: 20px;
     text-align: center;
-    font-style: italic;
+    font-style: normal;
     font-size: 1.1rem;
     line-height: 1.7;
 }
@@ -828,3 +828,6 @@ footer p {
     .nav-links { flex-wrap: nowrap; justify-content: flex-end; gap: 10px; }
     .nav-links a { font-size: .8rem; white-space: nowrap; }
 }
+
+/* No italics (Principal 10-16): emphasis by colour or weight. */
+em, i, cite, q, dfn, var, address { font-style: normal; }
